@@ -1,0 +1,3 @@
+variable "proxy_lambda" {
+	
+}
