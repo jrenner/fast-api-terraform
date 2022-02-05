@@ -1,0 +1,4 @@
+rich==11.1.0
+logzero==1.7.0
+fastapi==0.73.0
+mangum==0.12.3

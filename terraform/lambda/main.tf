@@ -1,5 +1,5 @@
 locals {
-	local_lambda_zip = "${path.module}/../../lambda-package.zip"
+	local_lambda_zip = "${path.module}/../../test_lambda/deploy/lambda-package.zip"
 }
 
 resource "aws_s3_bucket_object" "lambda_package" {
@@ -19,7 +19,7 @@ data "aws_iam_policy_document" "lambda" {
 			type = "Service"
 			identifiers = [
 				"lambda.amazonaws.com"
-			]	
+			]
 		}
 	}
 }
@@ -62,7 +62,7 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
 
 resource "aws_lambda_function" "proxy" {
 	function_name = "learn-api-proxy-lambda"
-	handler = "test_lambda.test.handler"
+	handler = "api_server.handler"
 	runtime = "python3.7"
 	role = aws_iam_role.lambda.arn
 	memory_size = 256

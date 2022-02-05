@@ -2,7 +2,6 @@ import json
 from re import I
 
 
-
 class LambdaProxyResponse:
     def __init__(self, body: dict):
         self.body = body
@@ -11,28 +10,26 @@ class LambdaProxyResponse:
         http_status_code = 200
         headers = {}
         data = {
-            "isBase64Encoded": False,
+            # "isBase64Encoded": False,
             "statusCode": http_status_code,
-            "headers": headers,
-            "body": self.body,
+            # "headers": headers,
+            "body": json.dumps(self.body),
         }
         return data
-
-    def to_json(self):
-        return json.dumps(self.build())
-
-
 
 
 def handler(event, context):
     print(f"event: {event}")
     print(f"context: {context}")
-    res = {
-            "message": "ok",
-            "number": 1234,
-            }
-    resp = LambdaProxyResponse(body=res)
-    return resp.to_json()
+    data = {
+        "message": "ok",
+        "number": 1234,
+    }
+    res = LambdaProxyResponse(body=data).build()
+    print(f"returning result: {res}")
+    print(f"result type: {type(res)}")
+    return res
+
 
 if __name__ == "__main__":
     ev = {"key1": 1}
