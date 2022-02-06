@@ -29,7 +29,7 @@ def create_fast_api_app():
     if STAGE == "local":
         root_path = ""
     elif STAGE in ["dev", "prod"]:
-        root_path = f"/{STAGE}/api"
+        root_path = f"/api"
     else:
         raise ApiServerException(f"invalid stage: {STAGE}")
     logger.info(f"create fast api app with root path: {root_path}")
