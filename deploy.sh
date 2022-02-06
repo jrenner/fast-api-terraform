@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # create lambda zip
+black test_lambda
 ./package_lambda.sh &&
 # run terraform apply in the terraform dir, with auto approve on
 terraform -chdir=terraform apply -auto-approve

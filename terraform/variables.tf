@@ -3,3 +3,7 @@ variable "instance_name" {
   type        = string
   default     = "ExampleAppServerInstance"
 }
+
+variable "env" {
+  default = "dev"
+}

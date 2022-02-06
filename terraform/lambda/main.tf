@@ -71,6 +71,11 @@ resource "aws_lambda_function" "proxy" {
 	s3_bucket = "jrenner-terraform"
 	s3_key = aws_s3_bucket_object.lambda_package.id
 	source_code_hash = base64sha256(filebase64(local.local_lambda_zip))
+	environment {
+		variables = {
+			STAGE = var.stage
+		}
+	}
 }
 
 resource "aws_lambda_permission" "apigw_proxy" {

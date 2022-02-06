@@ -69,4 +69,5 @@ module "api_gateway" {
 
 module "lambda" {
   source = "./lambda"
+  stage = var.env
 }
