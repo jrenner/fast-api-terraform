@@ -7,3 +7,7 @@ variable "instance_name" {
 variable "env" {
   default = "dev"
 }
+
+variable "username" {
+
+}

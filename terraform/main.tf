@@ -1,5 +1,5 @@
 locals {
-  region = "us-west-2"
+  region = "us-east-1"
 }
 
 terraform {
@@ -13,7 +13,7 @@ terraform {
   backend "s3" {
     bucket = "jrenner-terraform"
     key    = "tf_state/tutorial"
-    region = "us-west-2"
+    region = "us-east-1"
   }
 
   required_version = ">= 0.14.9"
@@ -21,24 +21,24 @@ terraform {
 
 provider "aws" {
   profile = "private"
-  region  = "us-west-2"
+  region  = local.region
 }
 
-resource "aws_instance" "app_server" {
-  ami           = "ami-08d70e59c07c61a3a"
-  instance_type = "t2.micro"
+//resource "aws_instance" "app_server" {
+//  ami           = "ami-08d70e59c07c61a3a"
+//  instance_type = "t2.micro"
+//
+//  tags = {
+//    Name = var.instance_name
+//  }
+//}
 
-  tags = {
-    Name = var.instance_name
-  }
-}
-
-resource "aws_s3_bucket" "jrenner_learn_bucket" {
-  bucket = "jrenner-learn-bucket"
+resource "aws_s3_bucket" "learn_bucket" {
+  bucket = "${var.username}-learn-bucket"
   acl    = "private"
 
   tags = {
-    Name = "jrenner learn bucket"
+    Name = "${var.username} learn bucket"
   }
 }
 
@@ -49,8 +49,8 @@ data "aws_iam_policy_document" "learn_policy_doc" {
       "s3:GetObject",
     ]
     resources = [
-      aws_s3_bucket.jrenner_learn_bucket.arn,
-      "${aws_s3_bucket.jrenner_learn_bucket.arn}/*"
+      aws_s3_bucket.learn_bucket.arn,
+      "${aws_s3_bucket.learn_bucket.arn}/*"
     ]
     effect = "Allow"
   }

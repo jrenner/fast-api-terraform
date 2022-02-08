@@ -1,4 +1,6 @@
-
+locals {
+  domain_name = "fast.inner-trac.org"
+}
 
 ## API GATEWAY
 
@@ -65,4 +67,60 @@ resource "aws_api_gateway_deployment" "deployment" {
 	lifecycle {
 	  create_before_destroy = true
 	}
+}
+
+# ACM certificate
+
+resource "aws_acm_certificate" "learn" {
+  domain_name = local.domain_name
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_route53_zone" "learn" {
+  name = local.domain_name
+}
+
+resource "aws_route53_record" "learn" {
+  for_each = {
+    for dvo in aws_acm_certificate.learn.domain_validation_options : dvo.domain_name => {
+      name = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type = dvo.resource_record_type
+    }
+  }
+
+  allow_overwrite = true
+  name = each.value.name
+  records = [each.value.record]
+  ttl = 60
+  type = each.value.type
+  zone_id = aws_route53_zone.learn.zone_id
+}
+
+resource "aws_acm_certificate_validation" "learn" {
+  certificate_arn = aws_acm_certificate.learn.arn
+  validation_record_fqdns = [for record in aws_route53_record.learn : record.fqdn]
+}
+
+# Custom Domain Name
+
+resource "aws_api_gateway_domain_name" "learn" {
+  domain_name = local.domain_name
+  certificate_arn = aws_acm_certificate_validation.learn.certificate_arn
+}
+
+resource "aws_route53_record" "learn-apigw" {
+  name = aws_api_gateway_domain_name.learn.domain_name
+  type = "A"
+  zone_id = aws_route53_zone.learn.id
+
+  alias {
+    evaluate_target_health = true
+    name = aws_api_gateway_domain_name.learn.cloudfront_domain_name
+    zone_id = aws_api_gateway_domain_name.learn.cloudfront_zone_id
+  }
 }
