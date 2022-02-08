@@ -3,7 +3,7 @@ locals {
 }
 
 resource "aws_s3_bucket_object" "lambda_package" {
-	bucket = "jrenner-terraform"
+	bucket = var.lambda_package_bucket
 	key = "learn_lambda_package.zip"
 	source = local.local_lambda_zip
 	etag = md5(filebase64(local.local_lambda_zip))
@@ -68,7 +68,7 @@ resource "aws_lambda_function" "proxy" {
 	memory_size = 256
 	timeout = 30
 
-	s3_bucket = "jrenner-terraform"
+	s3_bucket = "${var.lambda_package_bucket}"
 	s3_key = aws_s3_bucket_object.lambda_package.id
 	source_code_hash = base64sha256(filebase64(local.local_lambda_zip))
 	environment {

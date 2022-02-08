@@ -11,7 +11,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "jrenner-terraform"
+    bucket = "jrenner-terraform-state"
     key    = "tf_state/tutorial"
     region = "us-east-1"
   }
@@ -34,11 +34,11 @@ provider "aws" {
 //}
 
 resource "aws_s3_bucket" "learn_bucket" {
-  bucket = "${var.username}-learn-bucket"
+  bucket = "jrenner-learn-bucket-2"
   acl    = "private"
 
   tags = {
-    Name = "${var.username} learn bucket"
+    Name = "jrenner learn bucket 2"
   }
 }
 
@@ -65,9 +65,11 @@ resource "aws_iam_policy" "policy" {
 module "api_gateway" {
   source = "./api_gateway"
   proxy_lambda = module.lambda.proxy_lambda
+  stage = var.stage
 }
 
 module "lambda" {
   source = "./lambda"
-  stage = var.env
+  stage = var.stage
+  lambda_package_bucket = aws_s3_bucket.learn_bucket.id
 }

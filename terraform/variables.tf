@@ -4,10 +4,6 @@ variable "instance_name" {
   default     = "ExampleAppServerInstance"
 }
 
-variable "env" {
+variable "stage" {
   default = "dev"
-}
-
-variable "username" {
-
 }

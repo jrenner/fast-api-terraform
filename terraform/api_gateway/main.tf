@@ -124,3 +124,11 @@ resource "aws_route53_record" "learn-apigw" {
     zone_id = aws_api_gateway_domain_name.learn.cloudfront_zone_id
   }
 }
+
+# API Mapping for domain name
+
+resource "aws_api_gateway_base_path_mapping" "learn" {
+  api_id = aws_api_gateway_rest_api.learn_rest_api.id
+  stage_name = var.stage
+  domain_name = aws_api_gateway_domain_name.learn.domain_name
+}
