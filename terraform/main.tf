@@ -73,3 +73,4 @@ module "lambda" {
   stage = var.stage
   lambda_package_bucket = aws_s3_bucket.learn_bucket.id
 }
+
